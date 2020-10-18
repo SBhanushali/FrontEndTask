@@ -133,11 +133,29 @@ let TabListComponent = ({ id }, index) => {
   return tabsList;
 };
 
-let TextareaComponent = () => {
+let ButtonComponent = (type, id) => {
+  let button = document.createElement("button");
+  button.className = `button" class="ml-auto d-flex btn btn-primary ${
+    type == "next" ? "nextQuestion" : "submitForm"
+  }`;
+  button.id = id;
+  button.innerHTML = type == "next" ? "Save" : "Submit";
+  return button;
+};
+
+let TextareaComponent = (questionsData, id, index) => {
   let textAreaDiv = document.createElement("div");
-  textAreaDiv.className = "col-md-10";
-  textAreaDiv.innerHTML = `<textarea class="w-100 mt-3" placeholder="Comment" cols="30" rows="5"></textarea>
-                            <button type="button" class="ml-auto d-flex btn btn-primary">Submit</button>`;
+  textAreaDiv.className = `col-md-10 `;
+  let textArea = document.createElement("textarea");
+  textArea.className = `w-100 mt-3 ${id}`;
+  textArea.placeholder = "Comment";
+  textArea.cols = "30";
+  textArea.rows = "5";
+  textAreaDiv.appendChild(textArea);
+  index < questionsData.length - 1
+    ? textAreaDiv.appendChild(ButtonComponent("next", id))
+    : textAreaDiv.appendChild(ButtonComponent("submit", id));
+
   return textAreaDiv;
 };
 
@@ -149,7 +167,7 @@ let IframeComponent = ({ question, answerUrl }) => {
   return iframeDiv;
 };
 
-let GradeComponent = (gradesData) => {
+let GradeComponent = (gradesData, id) => {
   let gradeDiv = document.createElement("div");
   gradeDiv.className = "col-md-2 mt-3";
   let gradeHeading = document.createElement("h4");
@@ -159,7 +177,7 @@ let GradeComponent = (gradesData) => {
   let card = document.createElement("div");
   card.className = "card";
   let gradeGroup = document.createElement("div");
-  gradeGroup.className = "mr-auto";
+  gradeGroup.className = `mr-auto ${id}`;
   gradeGroup.setAttribute("data-toggle", "buttons");
   gradeGroup.style.display = "grid";
   gradesData.forEach((grade) => {
@@ -167,7 +185,7 @@ let GradeComponent = (gradesData) => {
     label.className = "btn btn-default";
     let input = document.createElement("input");
     input.type = "radio";
-    input.name = "grade";
+    input.name = id;
     input.value = `${grade.value}`;
     label.appendChild(input);
     let labelText = document.createTextNode(`${grade.label}`);
@@ -193,7 +211,7 @@ questionsData.forEach((question, index) => {
 
   let iframeDiv = IframeComponent(question);
 
-  let gradeDiv = GradeComponent(gradesData);
+  let gradeDiv = GradeComponent(gradesData, question.id);
 
   row.appendChild(iframeDiv);
   row.appendChild(gradeDiv);
@@ -201,7 +219,7 @@ questionsData.forEach((question, index) => {
   let row2 = document.createElement("div");
   row2.className = "row";
 
-  let textAreaDiv = TextareaComponent();
+  let textAreaDiv = TextareaComponent(questionsData, question.id, index);
 
   row2.appendChild(textAreaDiv);
 
@@ -236,6 +254,58 @@ document.querySelector(".next").addEventListener(
       .querySelector(".nav-tabs > .nav-item > .active")
       .parentNode.nextElementSibling.querySelector("a")
       .click();
+  },
+  false
+);
+// document.forms.candidateForm.Q5.value
+let answer = [];
+class questionResponse {
+  constructor(id, question, grade, comment) {
+    this.id = id;
+    this.question = question;
+    this.grade = grade;
+    this.comment = comment;
+  }
+}
+
+function storeResponse(e, index) {
+  e.preventDefault();
+  let id = e.target.id;
+  if (
+    document.forms.candidateForm[id].value &&
+    document.querySelectorAll(`.${id}`)[1].value
+  ) {
+    let question = questionsData[index].question;
+    let grade = document.forms.candidateForm[id].value;
+    let comment = document.querySelectorAll(`.${id}`)[1].value;
+    let o = answer.find((o) => o.id === id);
+    if (!o) answer.push(new questionResponse(id, question, grade, comment));
+    else {
+      o.grade = grade;
+      o.comment = comment;
+    }
+    document
+      .querySelector(".nav-tabs > .nav-item > .active")
+      .parentNode.nextElementSibling.querySelector("a")
+      .click();
+  } else {
+    alert("fill all value");
+  }
+}
+
+document.querySelectorAll(".nextQuestion").forEach((nextButton, index) => {
+  nextButton.addEventListener(
+    "click",
+    function (e) {
+      storeResponse(e, index);
+    },
+    false
+  );
+});
+document.querySelector(".submitForm").addEventListener(
+  "click",
+  function (e) {
+    storeResponse(e, questionsData.length - 1);
   },
   false
 );
