@@ -122,17 +122,67 @@ let tabContent = document.createElement("div");
 tabContent.className = "tab-content";
 tabContent.id = "nav-tabContent";
 
-questionsData.forEach((question, index) => {
-  /**************** navlinks ******************/
+let TabListComponent = ({ id }, index) => {
   tabsList = document.createElement("li");
   tabsList.className = "nav-item";
   tabsList.innerHTML = `<a class="nav-link ${
     index == 0 ? "active" : ""
-  }" data-toggle="tab" href="#${question.id}" role="tab" aria-selected="true">${
+  }" data-toggle="tab" href="#${id}" role="tab" aria-selected="true">${
     index + 1
   }</a>`;
+  return tabsList;
+};
+
+let TextareaComponent = () => {
+  let textAreaDiv = document.createElement("div");
+  textAreaDiv.className = "col-md-10";
+  textAreaDiv.innerHTML = `<textarea class="w-100 mt-3" placeholder="Comment" cols="30" rows="5"></textarea>
+                            <button type="button" class="ml-auto d-flex btn btn-primary">Submit</button>`;
+  return textAreaDiv;
+};
+
+let IframeComponent = ({ question, answerUrl }) => {
+  let iframeDiv = document.createElement("div");
+  iframeDiv.className = "col-md-10 mt-3 iframe-div";
+  iframeDiv.innerHTML = `<h4>${question}</h4><iframe src=${answerUrl} title=${question} allowfullscreen width="100%" height="100%" style="
+  height: 56vh;"></iframe>`;
+  return iframeDiv;
+};
+
+let GradeComponent = (gradesData) => {
+  let gradeDiv = document.createElement("div");
+  gradeDiv.className = "col-md-2 mt-3";
+  let gradeHeading = document.createElement("h4");
+  gradeHeadingText = document.createTextNode("Grade candidate");
+  gradeHeading.appendChild(gradeHeadingText);
+  gradeDiv.appendChild(gradeHeading);
+  let card = document.createElement("div");
+  card.className = "card";
+  let gradeGroup = document.createElement("div");
+  gradeGroup.className = "mr-auto";
+  gradeGroup.setAttribute("data-toggle", "buttons");
+  gradeGroup.style.display = "grid";
+  gradesData.forEach((grade) => {
+    let label = document.createElement("label");
+    label.className = "btn btn-default";
+    let input = document.createElement("input");
+    input.type = "radio";
+    input.name = "grade";
+    input.value = `${grade.value}`;
+    label.appendChild(input);
+    let labelText = document.createTextNode(`${grade.label}`);
+    label.appendChild(labelText);
+    gradeGroup.appendChild(label);
+  });
+  card.appendChild(gradeGroup);
+  gradeDiv.appendChild(card);
+  return gradeDiv;
+};
+
+questionsData.forEach((question, index) => {
+  let tabsList = TabListComponent(question, index);
   questionsTab.appendChild(tabsList);
-  /**************** navlinks ******************/
+
   let tabPanel = document.createElement("div");
   tabPanel.className = `tab-pane fade ${index == 0 ? "show active" : ""}`;
   tabPanel.id = `${question.id}`;
@@ -141,60 +191,18 @@ questionsData.forEach((question, index) => {
   let row = document.createElement("div");
   row.className = "row";
 
-  let iframeDiv = document.createElement("div");
-  iframeDiv.className = "col-md-10 mt-3 iframe-div";
+  let iframeDiv = IframeComponent(question);
 
-  iframeDiv.innerHTML = `<h4>${question.question}</h4><iframe src=${question.answerUrl} title=${question.question} allowfullscreen height="100%" width="100%"></iframe>`;
-
-  let gradeDiv = document.createElement("div");
-  gradeDiv.className = "col-md-2 mt-3";
-
-  let gradeHeading = document.createElement("h4");
-  gradeHeadingText = document.createTextNode("Grade candidate");
-  gradeHeading.appendChild(gradeHeadingText);
-
-  gradeDiv.appendChild(gradeHeading);
-  console.log(gradeDiv);
-  let card = document.createElement("div");
-  card.className = "card";
-  let gradeGroup = document.createElement("div");
-  gradeGroup.className = "mr-auto";
-  gradeGroup.setAttribute("data-toggle", "buttons");
-  gradeGroup.style.display = "grid";
-  gradesData.forEach((grade, i) => {
-    let label = document.createElement("label");
-    label.className = "btn btn-default";
-    let input = document.createElement("input");
-    input.type = "radio";
-    // input.id = `${i}`;
-    input.name = "grade";
-    input.value = `${grade.value}`;
-
-    label.appendChild(input);
-    let labelText = document.createTextNode(`${grade.label}`);
-    label.appendChild(labelText);
-    gradeGroup.appendChild(label);
-  });
-  card.appendChild(gradeGroup);
-  gradeDiv.appendChild(card);
+  let gradeDiv = GradeComponent(gradesData);
 
   row.appendChild(iframeDiv);
   row.appendChild(gradeDiv);
 
   let row2 = document.createElement("div");
   row2.className = "row";
-  let textAreaDiv = document.createElement("div");
-  textAreaDiv.className = "col-md-10";
 
-  textAreaDiv.innerHTML = `<textarea
-                            class="w-100 mt-3"
-                            placeholder="Comment"
-                            cols="30"
-                            rows="5"
-                            ></textarea>
-                            <button type="button" class="ml-auto d-flex btn btn-primary">
-                                Submit
-                            </button>`;
+  let textAreaDiv = TextareaComponent();
+
   row2.appendChild(textAreaDiv);
 
   tabPanel.appendChild(row);
