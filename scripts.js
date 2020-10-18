@@ -268,7 +268,7 @@ class questionResponse {
   }
 }
 
-function storeResponse(e, index) {
+function storeResponse(e, index, submit = false) {
   e.preventDefault();
   let id = e.target.id;
   if (
@@ -283,6 +283,15 @@ function storeResponse(e, index) {
     else {
       o.grade = grade;
       o.comment = comment;
+    }
+    if (submit) {
+      if (answer.length == questionsData.length) {
+        localStorage.setItem("responses", JSON.stringify(answer));
+        document.forms[0].reset();
+        window.location.pathname = "./display.html";
+      } else {
+        alert("All questions are mandatory");
+      }
     }
     document
       .querySelector(".nav-tabs > .nav-item > .active")
@@ -305,7 +314,7 @@ document.querySelectorAll(".nextQuestion").forEach((nextButton, index) => {
 document.querySelector(".submitForm").addEventListener(
   "click",
   function (e) {
-    storeResponse(e, questionsData.length - 1);
+    storeResponse(e, questionsData.length - 1, true);
   },
   false
 );
