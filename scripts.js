@@ -122,6 +122,13 @@ let tabContent = document.createElement("div");
 tabContent.className = "tab-content";
 tabContent.id = "nav-tabContent";
 
+/**
+ * Creates tabs to change between questions
+ * @param  {Number} id To specify div to target
+ * @param  {Number} index This helps for numbering of tabs and set first tab as active
+ * @return Tablist for navigation
+ */
+
 let TabListComponent = ({ id }, index) => {
   tabsList = document.createElement("li");
   tabsList.className = "nav-item";
@@ -133,6 +140,13 @@ let TabListComponent = ({ id }, index) => {
   return tabsList;
 };
 
+/**
+ * Creates next and submit button
+ * @param  {Number} id To use it for distinguishing button from which question
+ * @param  {String} type This helps for showing submit button in last question
+ * @return Button
+ */
+
 let ButtonComponent = (type, id) => {
   let button = document.createElement("button");
   button.className = `button" class="ml-auto d-flex btn btn-primary ${
@@ -142,6 +156,14 @@ let ButtonComponent = (type, id) => {
   button.innerHTML = type == "next" ? "Save" : "Submit";
   return button;
 };
+
+/**
+ * Creates textarea with next/submit button
+ * @param  {Array} questionsData To help in showing submit button at the last question
+ * @param  {Number} id To specify div to target
+ * @param  {Number} index This helps for keeping check of current tab
+ * @return TextArea
+ */
 
 let TextareaComponent = (questionsData, id, index) => {
   let textAreaDiv = document.createElement("div");
@@ -159,6 +181,13 @@ let TextareaComponent = (questionsData, id, index) => {
   return textAreaDiv;
 };
 
+/**
+ * Embeds candidate's video response to question
+ * @param  {String} question To display question
+ * @param  {String} answerUrl Candidate's response to the given question
+ * @return Iframe
+ */
+
 let IframeComponent = ({ question, answerUrl }) => {
   let iframeDiv = document.createElement("div");
   iframeDiv.className = "col-md-10 mt-3 iframe-div";
@@ -166,6 +195,13 @@ let IframeComponent = ({ question, answerUrl }) => {
   height: 56vh;"></iframe>`;
   return iframeDiv;
 };
+
+/**
+ * Creates textarea with next/submit button
+ * @param  {Array} gradesData To show grades input in form of radio button on right side
+ * @param  {Number} id To specify div to target
+ * @return GradeComponent
+ */
 
 let GradeComponent = (gradesData, id) => {
   let gradeDiv = document.createElement("div");
@@ -196,6 +232,8 @@ let GradeComponent = (gradesData, id) => {
   gradeDiv.appendChild(card);
   return gradeDiv;
 };
+
+/*Takes each question from questionsData and makes a page corresponding to that question consisting of question, video, grades input and textarea*/
 
 questionsData.forEach((question, index) => {
   let tabsList = TabListComponent(question, index);
@@ -236,6 +274,7 @@ questionsTab.appendChild(tabsList);
 document.getElementById("questions").appendChild(questionsTab);
 document.getElementById("questions").appendChild(tabContent);
 
+/** Previous and next button to use navigation using these buttons */
 document.querySelector(".previous").addEventListener(
   "click",
   function (e) {
@@ -259,7 +298,10 @@ document.querySelector(".next").addEventListener(
   },
   false
 );
-// document.forms.candidateForm.Q5.value
+/**
+ * 
+ Store user responses
+ */
 let answer = [];
 class questionResponse {
   constructor(id, question, grade, comment) {
@@ -269,6 +311,11 @@ class questionResponse {
     this.comment = comment;
   }
 }
+
+/**
+ * 
+ Validates if all the fields are filled and checks if new response should pe appended or question was already saved and made changes later
+ */
 
 function storeResponse(e, index, submit = false) {
   e.preventDefault();
