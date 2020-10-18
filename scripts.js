@@ -238,7 +238,8 @@ document.getElementById("questions").appendChild(tabContent);
 
 document.querySelector(".previous").addEventListener(
   "click",
-  function () {
+  function (e) {
+    e.preventDefault;
     document
       .querySelector(".nav-tabs > .nav-item > .active")
       .parentNode.previousElementSibling.querySelector("a")
@@ -249,7 +250,8 @@ document.querySelector(".previous").addEventListener(
 
 document.querySelector(".next").addEventListener(
   "click",
-  function () {
+  function (e) {
+    e.preventDefault();
     document
       .querySelector(".nav-tabs > .nav-item > .active")
       .parentNode.nextElementSibling.querySelector("a")
