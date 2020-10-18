@@ -43,3 +43,10 @@ textarea {
 .iframe-div {
   height: 60vh;
 }
+table {
+  width: auto;
+}
+
+td {
+  overflow-wrap: anywhere;
+}
