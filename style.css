@@ -4,6 +4,15 @@
   box-sizing: border-box;
 }
 
+textarea {
+  resize: none;
+  border-radius: 0.25rem;
+}
+
+.btn {
+  text-align: start;
+}
+
 .h-90vh {
   height: 90vh;
 }
@@ -29,4 +38,8 @@
 
 .no-border {
   border: none;
+}
+
+.iframe-div {
+  height: 60vh;
 }
